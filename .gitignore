@@ -1,0 +1,28 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Vscode
+.vscode/
+
+# Nextflow run artifacts
+work/
+.nextflow/
+.nextflow.log*
+
+# Other stuff
+.ruff_cache/
+.pytest_cache/
+.claude/
+.codegraph/
+.DS_Store
+
+# Scratch directory
+scratch/*

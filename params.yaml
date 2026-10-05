@@ -1,0 +1,54 @@
+# params.yaml -- every default pipeline parameter, nothing else. Load
+# explicitly:
+#
+#   nextflow run . -params-file params.yaml --sample_sheet sheet.csv \
+#       --data_dir /path/to/data --output_dir /path/to/output
+#
+# Per-run overrides: `--key value` on the command line wins over this file.
+# Executor/container settings live in nextflow.config and your own site
+# config (`-c site.config`; see README.md) -- never default parameter values.
+
+# ── Required, no default (fail fast if unset) ──────────────────────────────
+# CSV, one library per row: pacybara_prep's gene, assay, fragment,
+# fiveprime, target, threeprime columns, plus `fastq` (that library's
+# .fastq.gz, absolute or relative to data_dir). Any key of
+# pacybara_defaults below may also be a column, overriding it for that row;
+# a blank cell uses the default. See README.md.
+sample_sheet: null
+# Where each library's results are published, as <output_dir>/<TITLE>/.
+output_dir: null
+
+# ── Inputs ─────────────────────────────────────────────────────────────────
+# Base directory for relative `fastq` entries in the sample sheet (e.g.
+# .../Pacbio_processing/to_process/data). Unused if every entry is absolute.
+data_dir: null
+# YYYYMMDD prefix of every TITLE (<run_date>_<gene>_<assay>_<fragment>).
+# null = today, as pacybara_prep does.
+run_date: null
+
+# ── Archiving ──────────────────────────────────────────────────────────────
+# true: after a library's Pacybara run succeeds, move its fastq.gz into
+# completed_fastq_dir. Failed libraries' fastqs are left where they are.
+archive_inputs: false
+# e.g. .../Pacbio_processing/completed_fastqs. Required iff archive_inputs.
+completed_fastq_dir: null
+
+# ── Pacybara arguments ─────────────────────────────────────────────────────
+# Every library's ARGUMENTS section, unless its sample sheet row overrides
+# a key. These are pacybara_prep's values. Pacybara's README: MINQUAL ~67
+# for CCS reads, ~27 for DeepConsensus; CLUSTERMODE is uptag, downtag or
+# virtual; MINJACCARD must be written 0.<digits>.
+pacybara_defaults:
+  barcode: NNNNNNNNNNNNNNNN
+  maxqdrops: 4
+  minbcq: 32
+  minjaccard: 0.2
+  minmatches: 1
+  maxdiff: 1
+  minqual: 27
+  clustermode: uptag
+
+# ── Container ──────────────────────────────────────────────────────────────
+# Built from this repo's Dockerfile and published by
+# .github/workflows/docker.yml. Pin a :<short-sha> tag for reproducibility.
+container_image: "pacybara-workflow:latest"

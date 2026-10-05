@@ -1,0 +1,37 @@
+[project]
+name = "pacybara-workflow"
+version = "0.1.0"
+description = "Nextflow pipeline that turns a PacBio sample sheet into Pacybara parameter files and runs Pacybara on every library"
+readme = "README.md"
+authors = [
+    { email = "gwenneth.straub@gmail.com" }
+]
+requires-python = ">=3.13,<3.14"
+# Deliberately empty: the sample sheet is read with the stdlib csv module.
+# Pacybara's own dependencies live in its conda env inside the image (see
+# Dockerfile), never here.
+dependencies = []
+
+[project.scripts]
+pacybara-make-params = "pacybara_workflow.make_parameters:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit", "tests/integration"]
+
+[tool.ruff]
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+# Ruff's default select plus "I" (import sorting), as in the fisseq repos.
+select = ["E4", "E7", "E9", "F", "I"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "pytest>=8.4.1",
+    "ruff>=0.15.12",
+]
